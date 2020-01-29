@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<head>
+    <title>{{ t }}</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" text=text/css href="{{ url_for('static', filename='index.css') }}">
+    <style>
+        
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>TodoList</h1>
+    </div> 
+    
+    <form action="/addtask" method="post">
+    <table class="addtask">  
+        <tr>  
+            <td colspan="3"><h2>Add a Task:</h2></td>  
+        </tr>  
+        <tr>  
+            <td><input type="date" name="Duedate"/></td>    
+            <td><input type="text" name="task" placeholder="Enter Task: eg. Buying Groceries"/></td>  
+            <td><button type="submit"> Create </button></td>
+        </tr>  
+    </table>
+    </form>  
+
+    <br>
+    <h1>Hi User, you have {{ numcomplete }} incomplete tasks</h1>
+    <form action="/removetask" method="post" name="remove">
+        <!-- Table for Incomplete Tasks-->
+        <table class="incomplete">    
+            <tr id="tbheaders">  
+                <th class="Duedate">Due Date</th>  
+                <th class="task">Task</th>  
+                <th class="Done">Task Completed?</th>  
+            </tr>  
+        {% for todo in incomplete %}  
+            <tr class="incompletedata">  
+                <td class="Duedate">{{ todo['due_date'] }}</td>  
+                <td class="task">{{ todo['task'] }}</td>  
+                <td><button name="checks"value="{{ todo['_id'] }}" type="submit">Done</button></td> 
+            </tr>   
+        {% endfor %}  
+        </table> 
+    </form> 
+
+    <!--Removing items confirmation key=request.values.get("_id")-->
+    <script>
+        function removejs() {
+            windowlocation.href = "./removetask";
+        }
+    </script>
+
+    <br>
+    <h2>Completed Tasks</h2>
+    <!-- Table for Completed Tasks-->
+    <table class="completed">  
+        <tr id="tbheaders">  
+            <th class="Duedate">Due Date</th>  
+            <th class="task">Task</th>  
+            <th class="Done">Task Completed?</th>  
+        </tr>  
+    {% for todo in complete %}  
+        <tr class="completeddata">  
+            <td class="Duedate">{{ todo['due_date'] }}</td>  
+            <td class="task">{{ todo['task'] }}</td>  
+            <td class="Done">{{ todo['done'] }}</td>  
+        </tr>  
+    {% endfor %}  
+    </table>  
+    
+</body>
