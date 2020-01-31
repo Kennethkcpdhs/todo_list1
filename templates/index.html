@@ -28,9 +28,10 @@
     </form>  
 
     <br>
-    <h1>Hi User, you have {{ numcomplete }} incomplete tasks</h1>
+    <h1>Hi User, you have {{ numincomplete }} incomplete tasks</h1>
     <form action="/removetask" method="post" name="remove">
         <!-- Table for Incomplete Tasks-->
+        
         <table class="incomplete">    
             <tr id="tbheaders">  
                 <th class="Duedate">Due Date</th>  
@@ -47,29 +48,33 @@
         </table> 
     </form> 
 
-    <!--Removing items confirmation key=request.values.get("_id")-->
-    <script>
-        function removejs() {
-            windowlocation.href = "./removetask";
-        }
-    </script>
-
     <br>
-    <h2>Completed Tasks</h2>
     <!-- Table for Completed Tasks-->
-    <table class="completed">  
-        <tr id="tbheaders">  
-            <th class="Duedate">Due Date</th>  
-            <th class="task">Task</th>  
-            <th class="Done">Task Completed?</th>  
-        </tr>  
-    {% for todo in complete %}  
-        <tr class="completeddata">  
-            <td class="Duedate">{{ todo['due_date'] }}</td>  
-            <td class="task">{{ todo['task'] }}</td>  
-            <td class="Done">{{ todo['done'] }}</td>  
-        </tr>  
-    {% endfor %}  
-    </table>  
+    <form action="/" method="post">
+        <p>Show or Hide Completed Tasks</p>
+        <button onclick="/" name="check" value="show">Show</button>
+        <button onclick="/" name="check" value="hide">Hide</button> 
+    
+    
+    {% if hidevalue == "show" %}
+        <table class="completed">  
+            <tr id="tbheaders">  
+                <th class="Duedate">Due Date</th>  
+                <th class="task">Task</th>  
+                <th class="Done">Task Completed?</th>  
+            </tr>  
+        {% for todo in complete %}  
+            <tr class="completeddata">  
+                <td class="Duedate">{{ todo['due_date'] }}</td>  
+                <td class="task">{{ todo['task'] }}</td>  
+                <td class="Done">{{ todo['done'] }}</td>  
+            </tr>  
+        </table>  
+        {% endfor %}  
+    {% else %}
+    <h3> Completed Tasks are hidden </h3>
+    {% endif %}
+    </form>   
+    
     
 </body>
