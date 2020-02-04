@@ -27,7 +27,7 @@ def getMe():
 def index():
     #count the initial number of completed tasks
     numcompleted = todos.find({"done":"yes"}).count()
-    
+    value = "hide"
     completed_l = todos.find({"done":"yes"}).sort([("due_date", -1)])
     #count number of incomplete tasks
     numincomplete = todos.find({"done":"no"}).count()
@@ -39,7 +39,7 @@ def index():
             value = "hide"
         else:
             value = "show"
-    print(str(value))
+    
     return render_template("index.html", hidevalue=value,complete=completed_l, incomplete=incompleted_l, numincomplete=numincomplete, t=title)
 
 
