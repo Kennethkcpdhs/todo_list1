@@ -6,12 +6,13 @@ import webbrowser
 app = Flask(__name__)
 
 '''Mongo DB Configs'''
-#app.config["MONGO_URI"] = "mongodb://localhost:27017/SomeDatabase"
-#app.config['MONGO_DBNAME'] = 'SomeCollection'
-#app.config['SECRET_KEY'] = 'secret_key'
 title = "todolist"   
-client = MongoClient("mongodb://127.0.0.1:27017") #local host url 
-db = client.todolist   #Select the database  
+#Atlas database
+pwd = "goGgY9rm3GOBrogi"
+client = MongoClient("mongodb+srv://kkmongodb:"+pwd+"@cluster0-ixdqm.gcp.mongodb.net/test?retryWrites=true&w=majority")
+#client = MongoClient("mongodb://127.0.0.1:27017") #local host url 
+db = client.todolist #Select the database  
+#todos = db['todolist']
 todos = db.todolist
 
 '''Telegram Configs'''
@@ -23,16 +24,40 @@ def getMe():
     response = webbrowser.open(url+"/getMe")
     #print(response)
 
+@app.route('/setwebhook', methods=['GET', 'POST'])
+def set_webhook():
+    s = bot.setWebhook('{}{}'.format(url, token))
+    #check if worked
+    if s:
+        print("webhook setup ok") 
+    else:
+        print("webhook setup failed") 
+'''
+def sendtext(id,text):
+    data = {
+      method: "post",
+      payload: {
+         method: "sendMessage",
+         chat_id: String(id),
+         text: text,
+         parse_mode: "Markdown" // add markdown formatting
+         //reply_markup: JSON.stringify(keyBoard)
+      }
+    }
+'''
+
+'''Web app part'''
 @app.route("/", methods=["GET","POST"])
 def index():
     #count the initial number of completed tasks
     numcompleted = todos.find({"done":"yes"}).count()
-    value = "hide"
+    
     completed_l = todos.find({"done":"yes"}).sort([("due_date", -1)])
     #count number of incomplete tasks
     numincomplete = todos.find({"done":"no"}).count()
     incompleted_l = todos.find({"done":"no"}).sort([("due_date", 1)])
     print("ticks working")
+    value = "show"
     if request.method == "POST":
         value = request.form.get("check")
         if value == "hide":
@@ -66,16 +91,6 @@ def removetask():
         print(key)
         todos.update({"_id":ObjectId(key)},{"$set": {"done":"yes"}})  
         return redirect(url_for("index")) 
-
-@app.route('/setwebhook', methods=['GET', 'POST'])
-def set_webhook():
-    s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=TOKEN))
-    # something to let us know things work
-    if s:
-        return "webhook setup ok"
-    else:
-        return "webhook setup failed"
-
 
 if __name__ == "__main__":
     app.run(debug=True)
